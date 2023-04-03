@@ -1,4 +1,2 @@
-import { HomePage } from "./HomePage";
-import { ScorePage } from "./ScorePage";
-
-export { ScorePage, HomePage }
+export { HomePage } from "./HomePage/HomePage";
+export { ScorePage } from "./ScorePage";
