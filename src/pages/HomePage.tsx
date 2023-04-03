@@ -37,7 +37,7 @@ export const HomePage = () => {
     option.value === value.value;
 
   // TODO: Define breakpoints using theme provider
-  const isScreenSmall = useMediaQuery('(max-width:960px)');
+  const isScreenSmall = useMediaQuery("(max-width:960px)");
 
   return (
     <Container maxWidth="sm">
