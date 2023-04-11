@@ -24,7 +24,7 @@ export const ButtonGroupOption = ({ options, onSelected, selectedOption }: Butto
                             {
                                 borderRadius: 15,
                                 width: 1,
-                                mb: idx < options.length - 1 ? 4 : 0,
+                                mb: idx < options.length - 1 ? 3 : 0,
                                 height: 60,
                             }
                         }
