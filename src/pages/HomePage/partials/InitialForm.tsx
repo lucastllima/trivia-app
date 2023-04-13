@@ -1,34 +1,28 @@
+import type { CategoryOption } from "@/services/models";
+import { getCategories } from "@/services/TriviaService";
+import { PlayArrow } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
   CardContent,
   CardHeader,
+  CircularProgress,
   TextField,
   useMediaQuery,
 } from "@mui/material";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-interface CategoryOption {
-  label: string;
-  value: string;
-}
-
-type Props = {
+type InitialFormProps = {
   triggerStart: () => void;
 };
 
-export const InitialForm = ({ triggerStart }: Props) => {
+export const InitialForm = ({ triggerStart }: InitialFormProps) => {
   const [categories, setCategories] = useState<CategoryOption[]>([]);
-  const options: CategoryOption[] = [
-    { label: "Opção 1", value: "opt_1" },
-    { label: "Opção 2", value: "opt_2" },
-    { label: "Opção 3", value: "opt_3" },
-    { label: "Opção 4", value: "opt_4" },
-    { label: "Opção 5", value: "opt_5" },
-    { label: "Opção 67", value: "opt_6" },
-    { label: "Opção 7", value: "opt_7" },
-    { label: "Opção 8", value: "opt_8" },
-  ];
+  const [triviaCategories, setTriviaCategories] = useState<CategoryOption[]>(
+    []
+  );
+  const [loading, setLoading] = useState(false);
+
   const headerTitle =
     "Think you're a trivia whiz? Put your knowledge to the test with our trivia game! Choose your favorite category, challenge yourself, and discover how much you really know about history, science, pop culture, and more. Play now and prove that you're a true master of knowledge!";
 
@@ -38,6 +32,14 @@ export const InitialForm = ({ triggerStart }: Props) => {
 
   // TODO: Define breakpoints using theme provider
   const isScreenSmall = useMediaQuery("(max-width:960px)");
+
+  useEffect(() => {
+    setLoading(true)
+    getCategories().then((data) => {
+      setTriviaCategories(data);
+      setLoading(false)
+    })
+  }, []);
 
   return (
     <div className="InitialForm">
@@ -54,12 +56,27 @@ export const InitialForm = ({ triggerStart }: Props) => {
           disablePortal
           id="category-autocmplete"
           multiple
-          options={options}
+          options={triviaCategories}
           value={categories}
+          loading={loading}
           onChange={(_event, newValue) => {
             setCategories(newValue);
           }}
-          renderInput={(params) => <TextField {...params} label="Categories" />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Categories"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading && <CircularProgress color="primary" size={20} />}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              }}
+            />
+          )}
           getOptionLabel={getOptionLabel}
           isOptionEqualToValue={getOptionSelected}
         />
@@ -73,8 +90,16 @@ export const InitialForm = ({ triggerStart }: Props) => {
           }}
           variant="contained"
           onClick={() => triggerStart()}
+          disabled={categories.length === 0}
+          endIcon={
+            <PlayArrow
+              sx={{
+                marginBottom: "4px",
+              }}
+            />
+          }
         >
-          Start Trivia
+          Start
         </Button>
       </CardContent>
     </div>
